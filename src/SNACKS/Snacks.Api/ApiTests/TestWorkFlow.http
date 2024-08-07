@@ -1,0 +1,265 @@
+@url = https://localhost:7000
+@content-type = application/json
+
+###
+
+# register new restaurant, returns new apiKey
+# restaurant_id would be 4
+
+POST {{url}}/api/restaurant/register
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+
+{
+  "restaurant": {
+    "restaurantName": "NewBurgerei",
+    "webhookUrl": "https://webhook.site/4f131ab5-f565-4d80-a5b2-be471ef81c1e",
+    "image": {
+       "fileType": "png",
+       "imageData": "iVBORw0KGgoAAAANSUhEUgAAABQAAAARCAYAAADdRIy+AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAABdaVRYdFNuaXBNZXRhZGF0YQAAAAAAeyJjbGlwUG9pbnRzIjpbeyJ4IjowLCJ5IjowfSx7IngiOjIwLCJ5IjowfSx7IngiOjIwLCJ5IjoxN30seyJ4IjowLCJ5IjoxN31dfWwy5SQAAAAkSURBVDhPY/wPBAxUBExQmmpg1EDKwaiBlINRAykHI85ABgYAxpMEHuuzdTcAAAAASUVORK5CYII="
+    }
+  },
+  "address": {
+    "zipcode": 4232,
+    "city": "Hagenberg",
+    "street": "Softwarepark",
+    "streetNumber": 30,
+    "gpsLongitude": 13.388860,
+    "gpsLatitude": 52.516275
+  },
+  "openingHours": [
+    {
+      "weekDay": "Monday",
+      "startTime": "08:00:00",
+      "endTime": "17:00:00"
+    },
+    {
+      "weekDay": "Tuesday",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    },
+    {
+      "weekDay": "Wednesday",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    },
+    {
+      "weekDay": "Thursday",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    },
+    {
+      "weekDay": "Friday",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    }
+  ],
+  "closingDays": [
+    {
+      "weekDay": "Saturday"
+    },
+    {
+      "weekDay": "Sunday"
+    }
+  ]
+}
+
+###
+
+# set delivery condition for restaurant 4
+# new delivery_condition_id = 7
+
+POST {{url}}/api/deliverycondition/4
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: nUT5nPKaQEvtlBOgpyFZ08gCJooUURTnFFUsCd
+
+{
+    "distanceLowerThreshold": 0,
+    "distanceUpperThreshold": 50,
+    "orderValueLowerThreshold": 10, 
+    "deliveryCosts": 0,
+    "minOrderValue": 10
+}
+
+### 
+
+PUT {{url}}/api/deliverycondition/4/7
+Content-Type: {{content-type}}
+X-API-KEY: nUT5nPKaQEvtlBOgpyFZ08gCJooUURTnFFUsCd
+
+{
+    "distanceLowerThreshold": 0,
+    "distanceUpperThreshold": 50,
+    "orderValueLowerThreshold": 10, 
+    "deliveryCosts": 2,
+    "minOrderValue": 10
+}
+
+###
+
+# restaurant 4 adds new menu
+
+POST {{url}}/api/menuitem/restaurant/4
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: nUT5nPKaQEvtlBOgpyFZ08gCJooUURTnFFUsCd
+
+[
+    {
+        "menuItemName": "Big Mac New",
+        "menuItemDescription": "mit Pommes und Ketchup",
+        "price": 13.50,
+        "categoryName": "Hauptspeise"  
+    },
+    {
+        "menuItemName": "Chicken Nuggets",
+        "menuItemDescription": "mit Ketchup",
+        "price": 7.50,
+        "categoryName": "Beilage"  
+    }, 
+    {
+        "menuItemName": "Coca Cola",
+        "menuItemDescription": "0,5l",
+        "price": 3.50,
+        "categoryName": "Getr�nk"  
+    }
+]
+
+###
+
+## restaurant 4 updates menu item
+
+PUT {{url}}/api/menuitem/restaurant/4
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: nUT5nPKaQEvtlBOgpyFZ08gCJooUURTnFFUsCd
+
+[
+    {
+        "menuItemId": 19,
+        "menuItemName": "Big Mac New",
+        "menuItemDescription": "mit Pommes und Ketchup",
+        "price": 15.50, 
+        "categoryName": "Hauptspeise"
+    },
+    {
+        "menuItemId": 21,
+        "menuItemName": "Coca Cola",
+        "menuItemDescription": "0,5l",
+        "price": 4.50, 
+        "categoryName": "Getr�nke"
+    }
+]
+
+###
+
+# students searches restaurants (max distance 200km)
+GET {{url}}/api/order/findRestaurants?maxDistance=200&latitude=48.456512&longitude=14.89458&shouldBeOpen=true
+Accept: {{content-type}}
+
+###
+
+# get menu items of restaurant 4
+
+GET {{url}}/api/menuitem/restaurant/4
+Accept: {{content-type}}
+
+
+###
+
+# calculate costs for a selection of items restaurant 4
+
+POST {{url}}/api/order/calculatePrice
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+
+
+{
+    "RestaurantId" : 4,
+    "DeliveryAddress": {
+        "Zipcode": 4540, 
+        "City": "Bad Hall",
+        "Street": "Musterstra�e 1",
+        "StreetNumber": 12,
+        "GpsLatitude": 52.516,
+        "GpsLongitude": 13.38,
+        "FreeText": "Hinterhof"
+    },
+    "OrderedItems" : [
+        {
+            "MenuItemId": 19,
+            "Amount": 2
+        },
+        {
+            "MenuItemId": 20,
+            "Amount": 1
+        }
+    ]
+}
+
+###
+
+# student places order for restaurant 4
+POST {{url}}/api/order/placeOrder
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+
+
+{
+    "Order": {
+        "RestaurantId" : 4,
+        "CustomerName" : "Franz Huber",
+        "PhoneNumber" : "0664 1234567"
+    },
+    "DeliveryAddress": {
+        "Zipcode": 4540, 
+        "City": "Bad Hall",
+        "Street": "Musterstra�e 1",
+        "StreetNumber": 12,
+        "GpsLatitude": 52.516,
+        "GpsLongitude": 13.38,
+        "FreeText": "Hinterhof"
+    },
+    "OrderedItems" : [
+        {
+            "MenuItemId": 19,
+            "Amount": 2
+        },
+        {
+            "MenuItemId": 20,
+            "Amount": 1
+        }
+    ]
+}
+
+###
+
+# restaurant updates order 31 to status "in delivery"
+
+PUT {{url}}/api/order/status/4/31
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: nUT5nPKaQEvtlBOgpyFZ08gCJooUURTnFFUsCd
+
+{
+    "Status": "InDelivery"
+}
+
+###
+
+# get url for changing order 31 to status delivered
+
+GET {{url}}/api/order/status/link/4/31/Delivered
+Accept: {{content-type}}
+X-API-KEY: nUT5nPKaQEvtlBOgpyFZ08gCJooUURTnFFUsCd
+
+            
+### 
+
+# get status of order 31
+
+GET {{url}}/api/order/status/31
+Accept: {{content-type}}
+
+###

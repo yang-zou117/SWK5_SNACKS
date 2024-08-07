@@ -1,0 +1,104 @@
+@url = https://localhost:7000
+@content-type = application/json
+
+
+
+###
+
+# get delivery condition with id 1
+
+GET {{url}}/api/deliverycondition/1
+Accept: {{content-type}}
+
+
+###
+
+# get delivery conditions of restaurant 1
+
+GET {{url}}/api/deliverycondition/restaurant/1
+Accept: {{content-type}}
+
+
+###
+
+# insert new delivery condition for restaurant 3
+
+POST {{url}}/api/deliverycondition/3
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "distanceLowerThreshold": 51,
+    "distanceUpperThreshold": 100,
+    "orderValueLowerThreshold": 50, 
+    "deliveryCosts": 12,
+    "minOrderValue": 50
+}
+
+### 
+
+# insert new invalid delivery condition for restaurant 2
+# error expected as conflict with an existing delivery condition
+
+POST {{url}}/api/deliverycondition/2
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "distanceLowerThreshold": 0,
+    "distanceUpperThreshold": 10,
+    "orderValueLowerThreshold": 50, 
+    "deliveryCosts": 12,
+    "minOrderValue": 50
+}
+
+### 
+
+# update delivery condition 1 of restaurant 2
+
+PUT {{url}}/api/deliverycondition/2/1
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "distanceLowerThreshold": 0,
+    "distanceUpperThreshold": 10,
+    "orderValueLowerThreshold": 20, 
+    "deliveryCosts": 2,
+    "minOrderValue": 20
+}
+
+### 
+
+# update invalid delivery condition 1000000 of restaurant 2
+# error expected
+
+PUT {{url}}/api/deliverycondition/2/1000000
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "distanceLowerThreshold": 0,
+    "distanceUpperThreshold": 10,
+    "orderValueLowerThreshold": 20, 
+    "deliveryCosts": 2,
+    "minOrderValue": 20
+}
+
+###
+
+# delete delivery condition 6 of restaurant 3
+DELETE {{url}}/api/deliveryCondition/3/6
+X-API-KEY: testApiKey123
+
+###
+
+# delete invalid delivery condition 1000000 of restaurant 10
+# error expected
+
+DELETE {{url}}/api/deliveryCondition/10/1000000
+X-API-KEY: testApiKey123
+
+###

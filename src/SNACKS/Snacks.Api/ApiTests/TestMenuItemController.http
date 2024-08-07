@@ -1,0 +1,106 @@
+@url = https://localhost:7000
+@content-type = application/json
+
+
+
+###
+
+# get menu items with id 1
+
+GET {{url}}/api/menuitem/1
+Accept: {{content-type}}
+
+
+###
+
+# get menu items of restaurant 1
+
+GET {{url}}/api/menuitem/restaurant/1
+Accept: {{content-type}}
+
+
+###
+
+# create menu items for restaurant 1
+
+POST {{url}}/api/menuitem/restaurant/1
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+[
+    {
+        "menuItemName": "Kuchen",
+        "menuItemDescription": "Kuchen mit ganz viel Zucker",
+        "price": 3.50,
+        "categoryName": "Nachspeise"  
+    },
+    {
+        "menuItemName": "Pommes",
+        "menuItemDescription": "mit Ketchup",
+        "price": 3.50,
+        "categoryName": "Hauptspeise"  
+    }
+]
+
+### 
+
+# update menu item with id 1, 2 for restaurant 1
+# increase the price both to 20
+
+PUT {{url}}/api/menuitem/restaurant/1
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+[
+    {
+        "menuItemId" : 1,
+        "menuItemName": "Updated_Wiener_Schnitzel",
+        "menuItemDescription": "Wiener Schnitzel mit Pommes, Salat und Sauce nach Wahl",
+        "price": 20.00,
+        "categoryName": "Hauptspeisen"  
+    }, 
+    {
+        "menuItemId" : 2,
+        "menuItemName": "Updated_Cordon_Bleu",
+        "menuItemDescription": "Cordon Bleu mit Pommes, Salat und Sauce nach Wahl",
+        "price": 20.00,
+        "categoryName": "Hauptspeisen"  
+    }
+]
+
+### 
+
+# update menu item with an invalid id 1000000 for restaurant 1
+# error expected
+
+PUT {{url}}/api/menuitem/restaurant/1
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+[
+    {
+        "menuItemId" : 100000,
+        "menuItemName": "Updated_Wiener_Schnitzel",
+        "menuItemDescription": "Wiener Schnitzel mit Pommes, Salat und Sauce nach Wahl",
+        "price": 20.00,
+        "categoryName": "Hauptspeisen"  
+    }
+]
+
+### 
+
+# delete menu item 11 for restaurant 2
+
+DELETE {{url}}/api/menuitem/2/11
+X-API-KEY: testApiKey123
+
+###
+
+# delete menu item 1000000 for restaurant 2
+# not existing error expected
+
+DELETE {{url}}/api/menuitem/22/1000000
+X-API-KEY: testApiKey123
+
+### 

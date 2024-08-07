@@ -1,0 +1,282 @@
+@url = https://localhost:7000
+@content-type = application/json
+
+###
+
+# find restaurants in proximity (10 km) with no result
+
+GET {{url}}/api/order/findRestaurants?maxDistance=10&latitude=43.45&longitude=67.89&shouldBeOpen=false
+Accept: {{content-type}}
+
+### 
+
+# find restaurants in proximity (50 km) with results
+
+GET {{url}}/api/order/findRestaurants?maxDistance=50&latitude=48.456512&longitude=14.89458&shouldBeOpen=false
+Accept: {{content-type}}
+
+### 
+
+# find restaurants in proximity (50 km) with results (should also be open)
+
+GET {{url}}/api/order/findRestaurants?maxDistance=50&latitude=48.456512&longitude=14.89458&shouldBeOpen=true
+Accept: {{content-type}}
+
+### 
+
+# calculate price for a selection of items
+# 39.60 expected
+
+POST {{url}}/api/order/calculatePrice
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+
+
+{
+    "RestaurantId" : 1,
+    "DeliveryAddress": {
+        "Zipcode": 4540, 
+        "City": "Bad Hall",
+        "Street": "Musterstraﬂe 1",
+        "StreetNumber": 12,
+        "GpsLatitude": 48.1234,
+        "GpsLongitude": 16.1234,
+        "FreeText": "Hinterhof"
+    },
+    "OrderedItems" : [
+        {
+            "MenuItemId": 1,
+            "Amount": 2
+        },
+        {
+            "MenuItemId": 2,
+            "Amount": 1
+        },
+        {
+            "MenuItemId": 3,
+            "Amount": 1
+        }
+    ]
+}
+
+### 
+
+# calculate price for a selection of items
+# error expected as menu items do not belong to the same restaurant
+
+POST {{url}}/api/order/calculatePrice
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "RestaurantId" : 1,
+    "DeliveryAddress": {
+        "Zipcode": 4540, 
+        "City": "Bad Hall",
+        "Street": "Musterstraﬂe 1",
+        "StreetNumber": 12,
+        "GpsLatitude": 48.1234,
+        "GpsLongitude": 16.1234,
+        "FreeText": "Hinterhof"
+    },
+    "OrderedItems" : [
+        {
+            "MenuItemId": 1,
+            "Amount": 2
+        },
+        {
+            "MenuItemId": 2,
+            "Amount": 1
+        },
+        {
+            "MenuItemId": 9,
+            "Amount": 1
+        }
+    ]
+}
+
+### 
+
+# calculate price for a selection of items
+# error expected as no delivery condition is found
+# delivery address too far away
+
+POST {{url}}/api/order/calculatePrice
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "RestaurantId" : 1,
+    "DeliveryAddress": {
+        "Zipcode": 4540, 
+        "City": "Bad Hall",
+        "Street": "Musterstraﬂe 1",
+        "StreetNumber": 12,
+        "GpsLatitude": 48.1234,
+        "GpsLongitude": 18.1234,
+        "FreeText": "Hinterhof"
+    },
+    "OrderedItems" : [
+        {
+            "MenuItemId": 1,
+            "Amount": 2
+        },
+        {
+            "MenuItemId": 2,
+            "Amount": 1
+        },
+        {
+            "MenuItemId": 3,
+            "Amount": 1
+        }
+    ]
+}
+
+###
+
+# place order
+
+POST {{url}}/api/order/placeOrder
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+
+{
+    "Order": {
+        "RestaurantId" : 1,
+        "CustomerName" : "Franz Huber",
+        "PhoneNumber" : "0664 1234567"
+    },
+    "DeliveryAddress": {
+        "Zipcode": 4540, 
+        "City": "Bad Hall",
+        "Street": "Musterstraﬂe 1",
+        "StreetNumber": 12,
+        "GpsLatitude": 48.1234,
+        "GpsLongitude": 16.1234,
+        "FreeText": "Hinterhof"
+    },
+    "OrderedItems" : [
+        {
+            "MenuItemId": 1,
+            "Amount": 2
+        },
+        {
+            "MenuItemId": 2,
+            "Amount": 1
+        },
+        {
+            "MenuItemId": 3,
+            "Amount": 1
+        }
+    ]
+}
+
+###
+
+# place invalid order as no delivery conditons suits
+# error expected
+
+POST {{url}}/api/order/placeOrder
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+
+{
+    "Order": {
+        "RestaurantId" : 1,
+        "CustomerName" : "Franz Huber",
+        "PhoneNumber" : "0664 1234567"
+    },
+    "DeliveryAddress": {
+        "Zipcode": 4540, 
+        "City": "Bad Hall",
+        "Street": "Musterstraﬂe 1",
+        "StreetNumber": 12,
+        "GpsLatitude": 48.1234,
+        "GpsLongitude": 11.1234,
+        "FreeText": "Hinterhof"
+    },
+    "OrderedItems" : [
+        {
+            "MenuItemId": 1,
+            "Amount": 2
+        },
+        {
+            "MenuItemId": 2,
+            "Amount": 1
+        },
+        {
+            "MenuItemId": 3,
+            "Amount": 1
+        }
+    ]
+}
+
+###
+
+# get order by id
+
+GET {{url}}/api/order/1
+Accept: {{content-type}}
+
+###
+
+# get order status
+
+GET {{url}}/api/order/status/1
+Accept: {{content-type}}
+
+###
+
+# update order status
+
+PUT {{url}}/api/order/status/1/1
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "Status": "InDelivery"
+}
+
+
+###
+
+# error expected as invalid order status is provided
+
+PUT {{url}}/api/order/status/1/1
+Accept: {{content-type}}
+Content-Type: {{content-type}}
+X-API-KEY: testApiKey123
+
+{
+    "Status": "InDel"
+}
+
+###
+
+# get the link to change the order 1 of restaurant 1 to Delivered 
+
+GET {{url}}/api/order/status/link/1/1/Delivered
+Accept: {{content-type}}
+X-API-KEY: testApiKey123
+
+###
+
+# get link to change order 1000000 of restaurant 1 to BeingPrepared
+# error expected as order does not exist
+
+GET {{url}}/api/order/status/link/1/1000000/BeingPrepared
+Accept: {{content-type}}
+X-API-KEY: testApiKey123
+
+###
+
+# get order of retaurant 1 
+
+GET {{url}}/api/order/restaurant/1
+Accept: {{content-type}}
+X-API-KEY: testApiKey123
+
+###

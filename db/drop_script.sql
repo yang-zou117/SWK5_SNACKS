@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS delivery_condition;
+DROP TABLE IF EXISTS opening_hours;
+DROP TABLE IF EXISTS order_item; 
+DROP TABLE IF EXISTS menu_item;
+DROP TABLE IF EXISTS closing_day;
+DROP TABLE IF EXISTS api_key;
+DROP TABLE IF EXISTS change_order_status_link; 
+DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS restaurant;
+DROP TABLE IF EXISTS address;
